@@ -1,0 +1,147 @@
+<%- include('partials/header') %>
+<nav class="navbar navbar-expand-xl navbar-light" style="background-color: #f7f7f7;">
+  <a class="navbar-brand" href="/eatit">
+    <img src="images/plate-knife-and-fork.svg" width="50" height="50" class="d-inline-block align-top" alt="" loading="lazy">
+    EatIT
+  </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="/eatit">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/manage">Manage Items</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/toBuy">To Buy</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">About</a>
+        <div class="dropdown-menu" aria-labelledby="dropdown01">
+          <a class="dropdown-item" href="#">Credits</a>
+          <a class="dropdown-item" href="#">Contact Us</a>
+          <a class="dropdown-item" href="#">About Us</a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/logout">Logout</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<body>
+  <main role="main" class="eatit">
+    <div class="main-eatit">
+      <!-- Main jumbotron for a primary marketing message or call to action -->
+      <div class="jumbotron eatit">
+        <div class="container">
+          <h1 class="display-3">Hello, <%=name%>!</h1>
+          <p>“If more of us valued food and cheer and song above hoarded gold, it would be a merrier world.”</p>
+          <p> ― J.R.R. Tolkien</p>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <ul>
+        <% for(var i = 0;i<availableItems.length;i++){%>
+        <%if(availableItems[i].numDaysToExpire<1 && availableItems[i].quantity>0){%>
+        <li class="list-group-item list-group-item-danger">Item <%=availableItems[i].itemName%> bought on <%- helpers.getDateFull(availableItems[i].dateofBuying); %> has expired...<a href="/manage">manage all items</a></li>
+        <%break;%>
+        <%}%>
+      <%}%>
+      </ul>
+    </div>
+    <ul class="list-group">
+
+
+      <div class="container eatit-items text-center">
+        <div class="row">
+          <div class="col-md-6 newItems">
+            <div class="jumbotron text-center jumbotron-heading">
+              <div class="container items">
+                <h3 class="display-4" style="font-size: 2.2rem;">Add New Item</h3>
+              </div>
+            </div>
+            <form action="/eatit" method="post">
+              <div class="row newItem">
+                <div class="col-md-6 newItem-desc">
+                  <label for="new-itemname">Item</label>
+                  <input id="new-itemname" class="form-control form-control-md" type="text" name="itemname" placeholder="Item Name">
+                </div>
+                <div class="col-md-3 newItem-quantity">
+                  <label for="new-quantity">Quantity</label>
+                  <input id="new-quantity" class="form-control form-control-md" type="number" name="quantity" placeholder="in Kgs">
+                </div>
+                <div class="col-md-3 newItem-expiry">
+                  <label for="new-expiry">Expiry</label>
+                  <input id="new-expiry" class="form-control form-control-md" type="number" name="expiry" placeholder="in days">
+                </div>
+              </div>
+              <div class="text-center">
+                <button class="btn btn-primary btn-lg" type="submit" name="addItem" style="margin-top: 20px;">Add Item</button>
+              </div>
+            </form>
+          </div>
+          <%if(availableItems.length<4){%>
+          <div class="col-md-1 vl" style="height:<%=100* availableItems.length%>px"></div>
+          <%}else{%>
+          <div class="col-md-1 vl" style="height:300px"></div>
+          <%}%>
+        <div class="col-md-5 text-center addedItems">
+          <div class="jumbotron jumbotron-heading">
+            <div class="container items">
+              <h3 class="display-4" style="font-size: 2.2rem;">Recent Purchases</h3>
+            </div>
+          </div>
+
+          <div class="row availableItem">
+            <div class="col-md-4 availableItem-desc">
+              <p>Item</p>
+            </div>
+            <div class="col-md-4 availableItem-quantity">
+              <p>Quantity Left</p>
+            </div>
+            <div class="col-md-4 availableItem-expiry">
+              <p>Bought on</p>
+            </div>
+          </div>
+          <div class="row availableItem"> <hr class = "hr-styled"> </div>
+
+          <%if(availableItems.length>0){%>
+          <%for(var i = availableItems.length-1; i > availableItems.length-4 && i>=0 ; i--){%>
+          <div class="row availableItem">
+            <div class="col-md-4 availableItem-desc">
+              <p><%=availableItems[i].itemName%></p>
+            </div>
+            <div class="col-md-4 availableItem-quantity">
+              <p><%=availableItems[i].quantity%> Kgs</p>
+            </div>
+            <div class="col-md-4 availableItem-expiry">
+              <p><%- helpers.getDate(availableItems[i].dateofBuying); %></p>
+            </div>
+          </div>
+          <%}}%>
+          <%if(availableItems.length>3){%>
+          <button type="button" class="btn btn-secondary btn-md" name="button"><a href="/manage" style="color: white;">See All</a></button>
+          <%}%>
+        </div>
+
+      </div>
+
+
+
+    </div>
+
+  </main>
+  <div class="text-center">
+    <p class="mt-5 mb-3 text-muted">&copy;EatIT 2020</p>
+  </div>
+
+  <%- include('partials/footer') %>
